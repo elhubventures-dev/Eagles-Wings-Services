@@ -50,7 +50,6 @@ export const siteConfig = {
   address: siteCopy.contact.address,
   emergencyPhone: siteCopy.contact.phone,
   hours: siteCopy.contact.hours,
-  mapEmbed: siteCopy.contact.mapEmbed,
   social: {
     facebook: "https://facebook.com",
     instagram: "https://instagram.com",

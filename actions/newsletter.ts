@@ -55,7 +55,10 @@ export async function subscribeNewsletter(
       }).catch(() => undefined)
     }
 
-    return { success: true }
+    return {
+      success: true,
+      data: { email },
+    }
   } catch {
     return { error: "Subscription failed. Please try again." }
   }

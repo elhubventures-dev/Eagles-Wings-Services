@@ -1,10 +1,12 @@
 "use client"
 
+import { useEffect, useRef, useState } from "react"
 import { useFormState, useFormStatus } from "react-dom"
 import { motion } from "framer-motion"
 import { submitContactForm, type ActionState } from "@/actions/contact"
 import { services } from "@/content/services"
 import { Button } from "@/components/ui/Button"
+import { ThankYouModal } from "@/components/ui/ThankYouModal"
 import { fadeUp, staggerContainer } from "@/lib/motion"
 
 const initialState: ActionState = {}
@@ -22,102 +24,128 @@ function SubmitButton() {
 }
 
 export function ContactForm() {
+  const formRef = useRef<HTMLFormElement>(null)
   const [state, formAction] = useFormState(submitContactForm, initialState)
+  const [showThankYou, setShowThankYou] = useState(false)
+  const [submission, setSubmission] = useState<ActionState["data"]>()
+
+  useEffect(() => {
+    if (!state.success || !state.data) return
+    formRef.current?.reset()
+    setSubmission(state.data)
+    setShowThankYou(true)
+  }, [state.success, state.data])
 
   return (
-    <motion.form
-      action={formAction}
-      className="shine-border h-fit space-y-5 rounded-2xl border border-black/5 bg-white p-6 shadow-2xl shadow-brand-gold/10 md:p-8"
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true, amount: 0.2 }}
-      variants={staggerContainer}
-    >
-      <motion.div variants={fadeUp}>
-        <p className="text-sm font-semibold uppercase tracking-[0.2em] text-brand-gold">
-          Contact form
-        </p>
-        <h3 className="mt-2 font-heading text-2xl font-bold text-brand-black">
-          How can we help?
-        </h3>
-      </motion.div>
+    <>
+      <motion.form
+        ref={formRef}
+        action={formAction}
+        className="shine-border h-fit space-y-5 rounded-2xl border border-black/5 bg-white p-6 shadow-2xl shadow-brand-gold/10 md:p-8"
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.2 }}
+        variants={staggerContainer}
+      >
+        <motion.div variants={fadeUp}>
+          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-brand-gold">
+            Contact form
+          </p>
+          <h3 className="mt-2 font-heading text-2xl font-bold text-brand-black">
+            How can we help?
+          </h3>
+        </motion.div>
 
-      <motion.div variants={fadeUp} className="grid gap-5 md:grid-cols-2">
-        <Field
-          label="Full name"
-          name="name"
-          required
-          error={state.fields?.name?.[0]}
-        />
-        <Field
-          label="Email"
-          name="email"
-          type="email"
-          required
-          error={state.fields?.email?.[0]}
-        />
-      </motion.div>
-      <motion.div variants={fadeUp}>
-        <Field label="Phone" name="phone" type="tel" error={state.fields?.phone?.[0]} />
-      </motion.div>
-      <motion.div variants={fadeUp}>
-        <label htmlFor="service" className="mb-2 block text-sm font-medium text-brand-black">
-          Service
-        </label>
-        <select
-          id="service"
-          name="service"
-          className={fieldClass}
-          defaultValue=""
-        >
-          <option value="">General enquiry</option>
-          {services.map((service) => (
-            <option key={service.slug} value={service.title}>
-              {service.title}
-            </option>
-          ))}
-        </select>
-      </motion.div>
-      <motion.div variants={fadeUp}>
-        <label htmlFor="message" className="mb-2 block text-sm font-medium text-brand-black">
-          Message
-        </label>
-        <textarea
-          id="message"
-          name="message"
-          required
-          rows={5}
-          className={`${fieldClass} resize-none`}
-          placeholder="Tell us about your project or enquiry..."
-        />
-        {state.fields?.message?.[0] ? (
-          <p className="mt-1 text-sm text-brand-red">{state.fields.message[0]}</p>
+        <motion.div variants={fadeUp} className="grid gap-5 md:grid-cols-2">
+          <Field
+            label="Full name"
+            name="name"
+            required
+            error={state.fields?.name?.[0]}
+          />
+          <Field
+            label="Email"
+            name="email"
+            type="email"
+            required
+            error={state.fields?.email?.[0]}
+          />
+        </motion.div>
+        <motion.div variants={fadeUp}>
+          <Field label="Phone" name="phone" type="tel" error={state.fields?.phone?.[0]} />
+        </motion.div>
+        <motion.div variants={fadeUp}>
+          <label htmlFor="service" className="mb-2 block text-sm font-medium text-brand-black">
+            Service
+          </label>
+          <select
+            id="service"
+            name="service"
+            className={fieldClass}
+            defaultValue=""
+          >
+            <option value="">General enquiry</option>
+            {services.map((service) => (
+              <option key={service.slug} value={service.title}>
+                {service.title}
+              </option>
+            ))}
+          </select>
+        </motion.div>
+        <motion.div variants={fadeUp}>
+          <label htmlFor="message" className="mb-2 block text-sm font-medium text-brand-black">
+            Message
+          </label>
+          <textarea
+            id="message"
+            name="message"
+            required
+            rows={5}
+            className={`${fieldClass} resize-none`}
+            placeholder="Tell us about your project or enquiry..."
+          />
+          {state.fields?.message?.[0] ? (
+            <p className="mt-1 text-sm text-brand-red">{state.fields.message[0]}</p>
+          ) : null}
+        </motion.div>
+
+        <motion.div variants={fadeUp}>
+          <SubmitButton />
+        </motion.div>
+
+        {state.error ? (
+          <motion.p
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="rounded-xl bg-red-50 px-4 py-3 text-sm font-medium text-brand-red"
+          >
+            {state.error}
+          </motion.p>
         ) : null}
-      </motion.div>
+      </motion.form>
 
-      <motion.div variants={fadeUp}>
-        <SubmitButton />
-      </motion.div>
-
-      {state.success ? (
-        <motion.p
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="rounded-xl bg-green-50 px-4 py-3 text-sm font-medium text-green-700"
-        >
-          Thank you. Your message has been sent successfully.
-        </motion.p>
-      ) : null}
-      {state.error ? (
-        <motion.p
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="rounded-xl bg-red-50 px-4 py-3 text-sm font-medium text-brand-red"
-        >
-          {state.error}
-        </motion.p>
-      ) : null}
-    </motion.form>
+      <ThankYouModal
+        open={showThankYou}
+        onClose={() => setShowThankYou(false)}
+        title="Thank you for your enquiry"
+        description="We have received your message and will get back to you shortly. A confirmation email has also been sent to your inbox."
+        details={[
+          ...(submission?.name
+            ? [{ label: "Name", value: submission.name }]
+            : []),
+          ...(submission?.email
+            ? [{ label: "Email", value: submission.email }]
+            : []),
+          ...(submission?.phone
+            ? [{ label: "Phone", value: submission.phone }]
+            : []),
+          {
+            label: "Service",
+            value: submission?.service || "General enquiry",
+          },
+        ]}
+      />
+    </>
   )
 }
 

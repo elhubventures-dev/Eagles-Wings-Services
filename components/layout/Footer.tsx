@@ -1,5 +1,6 @@
 "use client"
 
+import { useEffect, useRef, useState } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { useFormState, useFormStatus } from "react-dom"
@@ -8,6 +9,7 @@ import { Mail, MapPin, Phone } from "lucide-react"
 import { siteConfig } from "@/config/site"
 import { subscribeNewsletter } from "@/actions/newsletter"
 import type { ActionState } from "@/actions/contact"
+import { ThankYouModal } from "@/components/ui/ThankYouModal"
 import { fadeUp, staggerContainer } from "@/lib/motion"
 import { whatsappHref } from "@/lib/utils"
 
@@ -27,7 +29,17 @@ function SubscribeButton() {
 }
 
 export function Footer() {
+  const formRef = useRef<HTMLFormElement>(null)
   const [state, formAction] = useFormState(subscribeNewsletter, initialState)
+  const [showThankYou, setShowThankYou] = useState(false)
+  const [subscriberEmail, setSubscriberEmail] = useState("")
+
+  useEffect(() => {
+    if (!state.success) return
+    formRef.current?.reset()
+    setSubscriberEmail(state.data?.email || "")
+    setShowThankYou(true)
+  }, [state])
 
   return (
     <footer className="section-mesh-dark relative overflow-hidden bg-brand-black text-white">
@@ -93,7 +105,7 @@ export function Footer() {
           <p className="mb-4 text-sm text-white/70">
             Subscribe for service tips, safety insights, and company news.
           </p>
-          <form action={formAction} className="flex gap-2">
+          <form ref={formRef} action={formAction} className="flex gap-2">
             <input
               type="email"
               name="email"
@@ -103,9 +115,6 @@ export function Footer() {
             />
             <SubscribeButton />
           </form>
-          {state.success ? (
-            <p className="mt-2 text-sm text-brand-gold">Thanks for subscribing.</p>
-          ) : null}
           {state.error ? (
             <p className="mt-2 text-sm text-brand-red">{state.error}</p>
           ) : null}
@@ -147,6 +156,18 @@ export function Footer() {
           </Link>
         </div>
       </div>
+
+      <ThankYouModal
+        open={showThankYou}
+        onClose={() => setShowThankYou(false)}
+        title="You're subscribed"
+        description="Thanks for joining the Eagle Wings newsletter. A confirmation email has been sent to your inbox."
+        details={
+          subscriberEmail
+            ? [{ label: "Subscribed email", value: subscriberEmail }]
+            : undefined
+        }
+      />
     </footer>
   )
 }

@@ -11,6 +11,13 @@ export type ActionState = {
   success?: boolean
   error?: string
   fields?: Record<string, string[] | undefined>
+  data?: {
+    name?: string
+    email?: string
+    phone?: string
+    service?: string
+    message?: string
+  }
 }
 
 export async function submitContactForm(
@@ -50,7 +57,16 @@ export async function submitContactForm(
       },
     })
 
-    return { success: true }
+    return {
+      success: true,
+      data: {
+        name: data.name,
+        email: data.email,
+        phone: data.phone,
+        service: data.service,
+        message: data.message,
+      },
+    }
   } catch {
     return {
       error: "Unable to send your message right now. Please try again later.",
