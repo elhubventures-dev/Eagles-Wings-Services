@@ -5,6 +5,7 @@ import { motion } from "framer-motion"
 import { Mail, Phone } from "lucide-react"
 import { team } from "@/content/team"
 import { fadeUp, staggerContainer } from "@/lib/motion"
+import { whatsappHref } from "@/lib/utils"
 
 export function TeamGrid() {
   return (
@@ -59,7 +60,10 @@ export function TeamGrid() {
                 {member.email}
               </a>
               <a
-                href={`tel:${member.phone.replace(/\s/g, "")}`}
+                href={whatsappHref(member.phone)}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={`Chat with ${member.name} on WhatsApp`}
                 className="flex items-center gap-2 text-sm text-brand-muted transition hover:text-brand-gold"
               >
                 <Phone className="h-4 w-4" />

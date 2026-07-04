@@ -1,11 +1,16 @@
 "use client"
 
 import { useFormState, useFormStatus } from "react-dom"
+import { motion } from "framer-motion"
 import { submitContactForm, type ActionState } from "@/actions/contact"
 import { services } from "@/content/services"
 import { Button } from "@/components/ui/Button"
+import { fadeUp, staggerContainer } from "@/lib/motion"
 
 const initialState: ActionState = {}
+
+const fieldClass =
+  "w-full rounded-xl border border-black/10 bg-brand-warm/50 px-4 py-3.5 text-sm outline-none transition duration-300 placeholder:text-brand-muted/60 focus:border-brand-gold focus:bg-white focus:shadow-md focus:shadow-brand-gold/10 focus:ring-2 focus:ring-brand-gold/20"
 
 function SubmitButton() {
   const { pending } = useFormStatus()
@@ -20,11 +25,24 @@ export function ContactForm() {
   const [state, formAction] = useFormState(submitContactForm, initialState)
 
   return (
-    <form
+    <motion.form
       action={formAction}
-      className="shine-border space-y-5 rounded-2xl border border-black/5 bg-white/95 p-6 shadow-2xl shadow-brand-gold/10 backdrop-blur md:p-8"
+      className="shine-border h-fit space-y-5 rounded-2xl border border-black/5 bg-white p-6 shadow-2xl shadow-brand-gold/10 md:p-8"
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true, amount: 0.2 }}
+      variants={staggerContainer}
     >
-      <div className="grid gap-5 md:grid-cols-2">
+      <motion.div variants={fadeUp}>
+        <p className="text-sm font-semibold uppercase tracking-[0.2em] text-brand-gold">
+          Contact form
+        </p>
+        <h3 className="mt-2 font-heading text-2xl font-bold text-brand-black">
+          How can we help?
+        </h3>
+      </motion.div>
+
+      <motion.div variants={fadeUp} className="grid gap-5 md:grid-cols-2">
         <Field
           label="Full name"
           name="name"
@@ -38,29 +56,29 @@ export function ContactForm() {
           required
           error={state.fields?.email?.[0]}
         />
-      </div>
-      <div className="grid gap-5 md:grid-cols-2">
+      </motion.div>
+      <motion.div variants={fadeUp}>
         <Field label="Phone" name="phone" type="tel" error={state.fields?.phone?.[0]} />
-        <div>
-          <label htmlFor="service" className="mb-2 block text-sm font-medium text-brand-black">
-            Service
-          </label>
-          <select
-            id="service"
-            name="service"
-            className="w-full rounded-md border border-black/10 bg-brand-warm/40 px-4 py-3 text-sm outline-none transition focus:border-brand-gold focus:bg-white focus:ring-2 focus:ring-brand-gold/30"
-            defaultValue=""
-          >
-            <option value="">General enquiry</option>
-            {services.map((service) => (
-              <option key={service.slug} value={service.title}>
-                {service.title}
-              </option>
-            ))}
-          </select>
-        </div>
-      </div>
-      <div>
+      </motion.div>
+      <motion.div variants={fadeUp}>
+        <label htmlFor="service" className="mb-2 block text-sm font-medium text-brand-black">
+          Service
+        </label>
+        <select
+          id="service"
+          name="service"
+          className={fieldClass}
+          defaultValue=""
+        >
+          <option value="">General enquiry</option>
+          {services.map((service) => (
+            <option key={service.slug} value={service.title}>
+              {service.title}
+            </option>
+          ))}
+        </select>
+      </motion.div>
+      <motion.div variants={fadeUp}>
         <label htmlFor="message" className="mb-2 block text-sm font-medium text-brand-black">
           Message
         </label>
@@ -69,24 +87,37 @@ export function ContactForm() {
           name="message"
           required
           rows={5}
-          className="w-full rounded-md border border-black/10 bg-brand-warm/40 px-4 py-3 text-sm outline-none transition focus:border-brand-gold focus:bg-white focus:ring-2 focus:ring-brand-gold/30"
+          className={`${fieldClass} resize-none`}
+          placeholder="Tell us about your project or enquiry..."
         />
         {state.fields?.message?.[0] ? (
           <p className="mt-1 text-sm text-brand-red">{state.fields.message[0]}</p>
         ) : null}
-      </div>
+      </motion.div>
 
-      <SubmitButton />
+      <motion.div variants={fadeUp}>
+        <SubmitButton />
+      </motion.div>
 
       {state.success ? (
-        <p className="text-sm font-medium text-green-700">
+        <motion.p
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="rounded-xl bg-green-50 px-4 py-3 text-sm font-medium text-green-700"
+        >
           Thank you. Your message has been sent successfully.
-        </p>
+        </motion.p>
       ) : null}
       {state.error ? (
-        <p className="text-sm font-medium text-brand-red">{state.error}</p>
+        <motion.p
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="rounded-xl bg-red-50 px-4 py-3 text-sm font-medium text-brand-red"
+        >
+          {state.error}
+        </motion.p>
       ) : null}
-    </form>
+    </motion.form>
   )
 }
 
@@ -113,7 +144,7 @@ function Field({
         name={name}
         type={type}
         required={required}
-        className="w-full rounded-md border border-black/10 bg-brand-warm/40 px-4 py-3 text-sm outline-none transition focus:border-brand-gold focus:bg-white focus:ring-2 focus:ring-brand-gold/30"
+        className={fieldClass}
       />
       {error ? <p className="mt-1 text-sm text-brand-red">{error}</p> : null}
     </div>

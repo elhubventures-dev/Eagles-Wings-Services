@@ -31,7 +31,7 @@ export const team: TeamMember[] = [
   {
     name: "Ndikum Elvis Nkwenti",
     role: "IT Expert / Media",
-    phone: "+237 696 541 845",
+    phone: "+44 7474 780484",
     email: "elvis.ndikum@e-wingss.com",
     image: "/images/team/elvis-ndikum.png",
   },

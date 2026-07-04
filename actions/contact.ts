@@ -1,7 +1,10 @@
 "use server"
 
-import { siteConfig } from "@/config/site"
-import { sendEmail } from "@/lib/email/resend"
+import { sendEmailPair } from "@/lib/email/resend"
+import {
+  enquiryAdminEmail,
+  enquiryClientEmail,
+} from "@/lib/email/templates"
 import { contactSchema } from "@/lib/validations/contact"
 
 export type ActionState = {
@@ -29,27 +32,28 @@ export async function submitContactForm(
     }
   }
 
-  const { name, email, phone, service, message } = parsed.data
+  const data = parsed.data
+  const admin = enquiryAdminEmail(data)
+  const client = enquiryClientEmail(data)
 
   try {
-    await sendEmail({
-      from: process.env.CONTACT_FROM_EMAIL || "noreply@e-wingss.com",
-      to: process.env.CONTACT_TO_EMAIL || siteConfig.email,
-      replyTo: email,
-      subject: `New enquiry from ${name}`,
-      html: `
-        <h2>New contact form submission</h2>
-        <p><strong>Name:</strong> ${name}</p>
-        <p><strong>Email:</strong> ${email}</p>
-        <p><strong>Phone:</strong> ${phone || "Not provided"}</p>
-        <p><strong>Service:</strong> ${service || "General enquiry"}</p>
-        <p><strong>Message:</strong></p>
-        <p>${message.replace(/\n/g, "<br />")}</p>
-      `,
+    await sendEmailPair({
+      admin: {
+        subject: admin.subject,
+        html: admin.html,
+        replyTo: data.email,
+      },
+      client: {
+        to: data.email,
+        subject: client.subject,
+        html: client.html,
+      },
     })
 
     return { success: true }
   } catch {
-    return { error: "Unable to send your message right now. Please try again later." }
+    return {
+      error: "Unable to send your message right now. Please try again later.",
+    }
   }
 }

@@ -39,6 +39,21 @@ export const siteCopy = {
       title: "Consultancy & Safety Trainings",
       description:
         "We help organizations create and maintain safe, compliant, and productive workplaces through professional safety solutions.",
+      includes: [
+        "Regulatory Compliance Support",
+        "Risk Assessment & Hazard Identification",
+        "Emergency Preparedness & Response Planning",
+        "Detailed Safety Inspections",
+        "Workplace Safety Audits",
+        "Safety Policy Development",
+        "Incident Investigation & Reporting",
+      ],
+      why: [
+        "Compliance with local and international safety standards",
+        "Practical, industry-focused safety solutions",
+        "Support during inspections and audits",
+        "Customized training and consultancy programmes",
+      ],
     },
     manpower: {
       title: "Manpower Placement",
@@ -61,13 +76,27 @@ export const siteCopy = {
       title: "General Commerce",
       description:
         "Eagle Wings Services Ltd provides reliable and efficient commercial solutions that support business growth and market expansion.",
+      includes: [
+        "Real Estate",
+        "Import & Export of Goods",
+        "Wholesale & Retail Distribution",
+        "Procurement Services",
+        "Supply Chain Management",
+        "Product Sourcing & Branding",
+      ],
+      why: [
+        "Reliable commercial and trade support",
+        "End-to-end supply chain solutions",
+        "Professional procurement and distribution",
+        "Clear communication and dependable delivery",
+      ],
     },
   },
   contact: {
     address: "Mile 2, Limbe – Cameroon",
     email: "info@e-wingss.com",
     phone: "(+237) 679 226 448",
-    phoneHref: "tel:+237679226448",
+    phoneHref: "https://wa.me/237679226448",
     hours: [
       "Mon - Fri: 8:00 am - 5:00 pm",
       "Saturday: 9:00am - 3:00pm",

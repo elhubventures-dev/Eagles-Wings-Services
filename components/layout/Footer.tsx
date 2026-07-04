@@ -3,10 +3,13 @@
 import Image from "next/image"
 import Link from "next/link"
 import { useFormState, useFormStatus } from "react-dom"
+import { motion } from "framer-motion"
 import { Mail, MapPin, Phone } from "lucide-react"
 import { siteConfig } from "@/config/site"
 import { subscribeNewsletter } from "@/actions/newsletter"
 import type { ActionState } from "@/actions/contact"
+import { fadeUp, staggerContainer } from "@/lib/motion"
+import { whatsappHref } from "@/lib/utils"
 
 const initialState: ActionState = {}
 
@@ -16,7 +19,7 @@ function SubscribeButton() {
     <button
       type="submit"
       disabled={pending}
-      className="rounded-md bg-gradient-to-r from-brand-gold to-brand-gold-dark px-4 py-3 text-sm font-semibold uppercase text-brand-black transition hover:brightness-110 disabled:opacity-60"
+      className="rounded-xl bg-gradient-to-r from-brand-gold to-brand-gold-dark px-5 py-3 text-sm font-semibold uppercase text-brand-black transition hover:brightness-110 disabled:opacity-60"
     >
       {pending ? "..." : "Join"}
     </button>
@@ -29,9 +32,17 @@ export function Footer() {
   return (
     <footer className="section-mesh-dark relative overflow-hidden bg-brand-black text-white">
       <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-brand-gold/50 to-transparent" />
-      <div className="container-site grid gap-10 py-16 md:grid-cols-2 lg:grid-cols-4">
-        <div className="space-y-5">
-          <div className="relative h-16 w-52 rounded-md bg-white px-2 py-1">
+      <div className="pointer-events-none absolute -left-20 bottom-0 h-64 w-64 rounded-full bg-brand-gold/10 blur-3xl" />
+
+      <motion.div
+        className="container-site grid gap-10 py-16 md:grid-cols-2 lg:grid-cols-4"
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.15 }}
+        variants={staggerContainer}
+      >
+        <motion.div variants={fadeUp} className="space-y-5">
+          <div className="relative h-16 w-52 rounded-md bg-white px-2 py-1 shadow-lg shadow-brand-gold/10">
             <Image
               src="/images/logo/logo-horizontal.png"
               alt={siteConfig.name}
@@ -43,23 +54,9 @@ export function Footer() {
             Manpower Placement and Safety Consultancy & Training — empowering
             businesses with skilled people, safe practices, and reliable solutions.
           </p>
-          <div className="space-y-3 text-sm text-white/80">
-            <p className="inline-flex items-start gap-2">
-              <Mail className="mt-0.5 h-4 w-4 text-brand-gold" />
-              {siteConfig.email}
-            </p>
-            <p className="inline-flex items-start gap-2">
-              <Phone className="mt-0.5 h-4 w-4 text-brand-gold" />
-              {siteConfig.phone}
-            </p>
-            <p className="inline-flex items-start gap-2">
-              <MapPin className="mt-0.5 h-4 w-4 text-brand-gold" />
-              {siteConfig.address}
-            </p>
-          </div>
-        </div>
+        </motion.div>
 
-        <div>
+        <motion.div variants={fadeUp}>
           <h3 className="mb-4 font-heading text-lg font-bold">Useful Links</h3>
           <ul className="space-y-2 text-sm text-white/75">
             {siteConfig.footerLinks.company.map((link) => (
@@ -73,9 +70,9 @@ export function Footer() {
               </li>
             ))}
           </ul>
-        </div>
+        </motion.div>
 
-        <div>
+        <motion.div variants={fadeUp}>
           <h3 className="mb-4 font-heading text-lg font-bold">Services</h3>
           <ul className="space-y-2 text-sm text-white/75">
             {siteConfig.footerLinks.services.map((link) => (
@@ -89,9 +86,9 @@ export function Footer() {
               </li>
             ))}
           </ul>
-        </div>
+        </motion.div>
 
-        <div>
+        <motion.div variants={fadeUp}>
           <h3 className="mb-4 font-heading text-lg font-bold">Get Updates</h3>
           <p className="mb-4 text-sm text-white/70">
             Subscribe for service tips, safety insights, and company news.
@@ -102,7 +99,7 @@ export function Footer() {
               name="email"
               required
               placeholder="Email address"
-              className="w-full rounded-md border border-white/10 bg-white/5 px-4 py-3 text-sm text-white outline-none ring-brand-gold placeholder:text-white/40 focus:ring-2"
+              className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white outline-none transition placeholder:text-white/40 focus:border-brand-gold focus:ring-2 focus:ring-brand-gold/30"
             />
             <SubscribeButton />
           </form>
@@ -112,6 +109,31 @@ export function Footer() {
           {state.error ? (
             <p className="mt-2 text-sm text-brand-red">{state.error}</p>
           ) : null}
+        </motion.div>
+      </motion.div>
+
+      <div className="border-t border-white/10">
+        <div className="container-site flex flex-col gap-3 py-5 text-sm text-white/80 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between sm:gap-6">
+          <a
+            href={`mailto:${siteConfig.email}`}
+            className="inline-flex items-center gap-2 transition hover:text-brand-gold"
+          >
+            <Mail className="h-4 w-4 shrink-0 text-brand-gold" />
+            {siteConfig.email}
+          </a>
+          <a
+            href={whatsappHref(siteConfig.phone)}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 transition hover:text-brand-gold"
+          >
+            <Phone className="h-4 w-4 shrink-0 text-brand-gold" />
+            {siteConfig.phone}
+          </a>
+          <p className="inline-flex items-center gap-2">
+            <MapPin className="h-4 w-4 shrink-0 text-brand-gold" />
+            {siteConfig.address}
+          </p>
         </div>
       </div>
 
@@ -120,7 +142,9 @@ export function Footer() {
           <p>
             © {new Date().getFullYear()} {siteConfig.name}. All rights reserved.
           </p>
-          <p>Built for performance. Zero WordPress dependency.</p>
+          <Link href="/privacy-policy" className="transition hover:text-brand-gold">
+            Privacy Policy
+          </Link>
         </div>
       </div>
     </footer>

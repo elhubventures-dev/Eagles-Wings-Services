@@ -39,8 +39,8 @@ export default function BlogPostPage({ params }: BlogPostPageProps) {
         ]}
       />
 
-      <article className="section-padding bg-white">
-        <div className="container-site max-w-4xl">
+      <article className="section-padding section-mesh bg-brand-warm">
+        <div className="container-site max-w-4xl rounded-2xl border border-black/5 bg-white p-6 shadow-xl shadow-brand-gold/5 md:p-10">
           <div className="relative mb-8 aspect-[16/9] overflow-hidden rounded-2xl">
             <Image
               src={post.image}

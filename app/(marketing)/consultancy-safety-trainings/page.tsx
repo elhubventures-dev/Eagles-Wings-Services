@@ -6,28 +6,28 @@ import { CtaBanner } from "@/components/sections/CtaBanner"
 import { siteCopy } from "@/content/pages"
 
 export const metadata: Metadata = {
-  title: "Manpower Supplies",
-  description: siteCopy.serviceGroups.manpower.description,
+  title: "Consultancy & Safety Trainings",
+  description: siteCopy.serviceGroups.safety.description,
 }
 
-export default function ManpowerSuppliesPage() {
+export default function ConsultancySafetyTrainingsPage() {
   return (
     <>
       <PageHero
-        title="Manpower Placement"
-        eyebrow="Manpower Supplies"
+        title="Consultancy & Safety Trainings"
+        eyebrow="Our services"
         breadcrumbs={[
           { label: "Home", href: "/" },
           { label: "Services", href: "/services" },
-          { label: "Manpower Supplies" },
+          { label: "Consultancy & Safety Trainings" },
         ]}
       />
       <CategoryIntro
-        category="manpower"
-        includesLabel="Our manpower solutions include:"
-        whyLabel="Why choose our manpower services:"
+        category="safety"
+        includesLabel="Our safety solutions include:"
+        whyLabel="Why choose our safety services:"
       />
-      <ServicesGrid category="manpower" showHeading={false} />
+      <ServicesGrid category="safety" showHeading={false} />
       <CtaBanner />
     </>
   )

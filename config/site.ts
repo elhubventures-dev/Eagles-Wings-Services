@@ -1,5 +1,41 @@
 import { siteCopy } from "@/content/pages"
-import { services } from "@/content/services"
+import { services, type ServiceCategory } from "@/content/services"
+
+const serviceGroups: {
+  category: ServiceCategory
+  label: string
+  href: string
+  description: string
+}[] = [
+  {
+    category: "safety",
+    label: siteCopy.serviceGroups.safety.title,
+    href: "/consultancy-safety-trainings",
+    description: siteCopy.serviceGroups.safety.description,
+  },
+  {
+    category: "manpower",
+    label: siteCopy.serviceGroups.manpower.title,
+    href: "/manpower-supplies",
+    description: siteCopy.serviceGroups.manpower.description,
+  },
+  {
+    category: "commerce",
+    label: siteCopy.serviceGroups.commerce.title,
+    href: "/general-commerce",
+    description: siteCopy.serviceGroups.commerce.description,
+  },
+]
+
+export const serviceMenu = serviceGroups.map((group) => ({
+  ...group,
+  children: services
+    .filter((service) => service.category === group.category)
+    .map((service) => ({
+      label: service.title,
+      href: `/services/${service.slug}`,
+    })),
+}))
 
 export const siteConfig = {
   name: "Eagle Wings Services Ltd.",
@@ -27,12 +63,8 @@ export const siteConfig = {
     {
       label: "Services",
       href: "/services",
-      children: services.slice(0, 8).map((service) => ({
-        label: service.title,
-        href: `/services/${service.slug}`,
-      })),
+      mega: true as const,
     },
-    { label: "Manpower", href: "/manpower-supplies" },
     { label: "Portfolio", href: "/portfolio" },
     { label: "Team", href: "/team" },
     { label: "Testimonials", href: "/testimonials" },
@@ -48,9 +80,12 @@ export const siteConfig = {
       { label: "Privacy Policy", href: "/privacy-policy" },
     ],
     services: [
-      { label: "Safety Consultancy", href: "/services" },
+      {
+        label: "Consultancy & Safety Trainings",
+        href: "/consultancy-safety-trainings",
+      },
       { label: "Manpower Placement", href: "/manpower-supplies" },
-      { label: "General Commerce", href: "/services" },
+      { label: "General Commerce", href: "/general-commerce" },
       { label: "Contact", href: "/contact" },
       { label: "FAQ", href: "/faq" },
     ],

@@ -1,5 +1,10 @@
 "use server"
 
+import { sendEmailPair } from "@/lib/email/resend"
+import {
+  newsletterAdminEmail,
+  newsletterClientEmail,
+} from "@/lib/email/templates"
 import { newsletterSchema } from "@/lib/validations/contact"
 import type { ActionState } from "./contact"
 
@@ -18,29 +23,36 @@ export async function subscribeNewsletter(
     }
   }
 
-  const audienceId = process.env.RESEND_AUDIENCE_ID
-  const apiKey = process.env.RESEND_API_KEY
-
-  if (!apiKey || !audienceId) {
-    console.info("[newsletter:dev]", parsed.data.email)
-    return { success: true }
-  }
+  const email = parsed.data.email
+  const admin = newsletterAdminEmail(email)
+  const client = newsletterClientEmail(email)
 
   try {
-    const response = await fetch(
-      `https://api.resend.com/audiences/${audienceId}/contacts`,
-      {
+    await sendEmailPair({
+      admin: {
+        subject: admin.subject,
+        html: admin.html,
+        replyTo: email,
+      },
+      client: {
+        to: email,
+        subject: client.subject,
+        html: client.html,
+      },
+    })
+
+    // Optional Resend audience sync when configured
+    const audienceId = process.env.RESEND_AUDIENCE_ID
+    const apiKey = process.env.RESEND_API_KEY
+    if (apiKey && audienceId) {
+      await fetch(`https://api.resend.com/audiences/${audienceId}/contacts`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${apiKey}`,
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ email: parsed.data.email }),
-      }
-    )
-
-    if (!response.ok) {
-      return { error: "Subscription failed. Please try again." }
+        body: JSON.stringify({ email }),
+      }).catch(() => undefined)
     }
 
     return { success: true }

@@ -46,6 +46,8 @@ export function WhyChoose() {
             <Button href="/contact">Contact Us</Button>
             <a
               href={siteConfig.phoneHref}
+              target="_blank"
+              rel="noopener noreferrer"
               className="text-sm font-semibold text-brand-red transition hover:text-brand-gold"
             >
               {siteConfig.phone}
