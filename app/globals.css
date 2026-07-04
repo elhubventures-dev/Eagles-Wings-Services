@@ -3,25 +3,213 @@
 @tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --brand-black: #16171a;
+  --brand-black-2: #1d1e22;
+  --brand-gold: #d69a46;
+  --brand-gold-dark: #c4872f;
+  --brand-red: #dd0733;
+  --brand-warm: #f2edeb;
+  --brand-muted: #727272;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  @apply bg-white text-brand-black antialiased;
+}
+
+@layer components {
+  .container-site {
+    @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8;
+  }
+
+  .section-padding {
+    @apply py-16 md:py-24;
+  }
+
+  .glass-panel {
+    @apply border border-white/10 bg-white/5 backdrop-blur-md;
+  }
+
+  .gold-glow {
+    box-shadow:
+      0 0 0 1px rgba(214, 154, 70, 0.15),
+      0 20px 50px -20px rgba(214, 154, 70, 0.55);
+  }
+
+  .card-surface {
+    @apply overflow-hidden rounded-2xl border border-black/5 bg-white shadow-sm transition-all duration-500;
+  }
+
+  .card-surface:hover {
+    @apply border-brand-gold/20 shadow-2xl shadow-brand-gold/10;
+  }
+
+  .text-gradient-gold {
+    @apply bg-gradient-to-r from-brand-gold via-[#f0c27a] to-brand-gold bg-clip-text text-transparent;
+  }
+
+  .section-mesh {
+    background-image:
+      radial-gradient(circle at 10% 20%, rgba(214, 154, 70, 0.12), transparent 35%),
+      radial-gradient(circle at 90% 10%, rgba(221, 7, 51, 0.08), transparent 30%),
+      radial-gradient(circle at 80% 80%, rgba(214, 154, 70, 0.1), transparent 35%);
+  }
+
+  .section-mesh-dark {
+    background-image:
+      radial-gradient(circle at 15% 20%, rgba(214, 154, 70, 0.18), transparent 32%),
+      radial-gradient(circle at 85% 70%, rgba(221, 7, 51, 0.12), transparent 30%);
+  }
+
+  .shine-border {
+    position: relative;
+  }
+
+  .shine-border::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(
+      135deg,
+      rgba(214, 154, 70, 0.7),
+      transparent 40%,
+      transparent 60%,
+      rgba(214, 154, 70, 0.35)
+    );
+    -webkit-mask:
+      linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
+    mask:
+      linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+  }
+
+  .nav-link {
+    @apply relative text-sm font-semibold uppercase tracking-wide text-white/90 transition;
+  }
+
+  .nav-link::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -6px;
+    width: 100%;
+    height: 2px;
+    transform: scaleX(0);
+    transform-origin: left;
+    background: linear-gradient(90deg, #d69a46, #f0c27a);
+    transition: transform 0.3s ease;
+  }
+
+  .nav-link:hover {
+    @apply text-brand-gold;
+  }
+
+  .nav-link:hover::after {
+    transform: scaleX(1);
+  }
 }
 
 @layer utilities {
-  .text-balance {
-    text-wrap: balance;
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
+
+  .animate-float-delayed {
+    animation: float 7s ease-in-out 1s infinite;
+  }
+
+  .animate-pulse-glow {
+    animation: pulse-glow 3s ease-in-out infinite;
+  }
+
+  .animate-ken-burns {
+    animation: ken-burns 18s ease-in-out infinite alternate;
+  }
+
+  .animate-shimmer {
+    background-size: 200% 100%;
+    animation: shimmer 2.5s linear infinite;
+  }
+
+  .animate-gradient-x {
+    background-size: 200% 200%;
+    animation: gradient-x 8s ease infinite;
+  }
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-12px);
+  }
+}
+
+@keyframes pulse-glow {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(214, 154, 70, 0.35);
+  }
+  50% {
+    box-shadow: 0 0 0 12px rgba(214, 154, 70, 0);
+  }
+}
+
+@keyframes ken-burns {
+  0% {
+    transform: scale(1) translate(0, 0);
+  }
+  100% {
+    transform: scale(1.12) translate(-1.5%, -1%);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+@keyframes gradient-x {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+::selection {
+  background: #d69a46;
+  color: #16171a;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .animate-float,
+  .animate-float-delayed,
+  .animate-pulse-glow,
+  .animate-ken-burns,
+  .animate-shimmer,
+  .animate-gradient-x {
+    animation: none !important;
   }
 }
