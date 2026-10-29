@@ -15,7 +15,7 @@ export function JsonLd() {
       addressLocality: siteConfig.address,
     },
     areaServed: "South Africa",
-    image: `${siteConfig.url}/images/logo/logo.png`,
+    image: `${siteConfig.url}/images/og-image.png`,
     sameAs: Object.values(siteConfig.social),
   }
 
